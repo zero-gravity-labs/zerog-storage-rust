@@ -285,7 +285,10 @@ impl FlowWrite for FlowStore {
     }
 
     fn put_pad_data(&self, data_sizes: &[PadPair], tx_seq: u64) -> crate::error::Result<()> {
-        self.flow_db.put_pad_data(data_sizes, tx_seq)
+        let start_time = Instant::now();
+        let res = self.flow_db.put_pad_data(data_sizes, tx_seq);
+        metrics::PUT_PAD_DATA.update_since(start_time);
+        res
     }
 
     fn put_pad_data_sync_height(&self, sync_index: u64) -> crate::error::Result<()> {
@@ -295,6 +298,7 @@ impl FlowWrite for FlowStore {
 
 impl FlowSeal for FlowStore {
     fn pull_seal_chunk(&self, seal_index_max: usize) -> Result<Option<Vec<SealTask>>> {
+        let start_time = Instant::now();
         let to_seal_set = self.seal_manager.to_seal_set.read();
         self.seal_manager.update_pull_time();
 
@@ -326,6 +330,8 @@ impl FlowSeal for FlowStore {
                 non_sealed_data,
             })
         }
+
+        metrics::PULL_SEAL_CHUNK.update_since(start_time);
 
         Ok(Some(tasks))
     }

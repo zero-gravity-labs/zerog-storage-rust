@@ -40,4 +40,7 @@ lazy_static::lazy_static! {
     pub static ref DATA_TO_MERKLE_LEAVES_SIZE: Arc<dyn Gauge<usize>> = GaugeUsize::register("log_store_data_to_merkle_leaves_size");
 
     pub static ref TX_BY_SEQ_NUMBER: Arc<dyn Timer> = register_timer("log_store_tx_store_get_tx_by_seq_number");
+
+    pub static ref PULL_SEAL_CHUNK: Arc<dyn Timer> = register_timer("log_store_flow_store_pull_seal_chunks");
+    pub static ref PUT_PAD_DATA: Arc<dyn Timer> = register_timer("log_store_flow_store_put_pad_data");
 }
